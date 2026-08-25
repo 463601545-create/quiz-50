@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>头皮护理知识考核（50题）</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#f0f4f8;color:#2d3748;line-height:1.6;padding-bottom:60px}
+.header{background:linear-gradient(135deg,#1a73e8,#0d47a1);color:#fff;padding:24px 16px 18px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.header h1{font-size:1.3rem;margin-bottom:10px;letter-spacing:1px}
+.stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.stat-item{background:rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:.82rem}
+.stat-item span{font-weight:700;font-size:1rem}
+.progress-bar{width:100%;height:5px;background:rgba(255,255,255,.2);border-radius:3px;margin-top:12px;overflow:hidden}
+.progress-fill{height:100%;background:#69f0ae;border-radius:3px;transition:width .4s ease;width:0%}
+.container{max-width:720px;margin:0 auto;padding:12px}
+.question-card{background:#fff;border-radius:12px;margin:14px 0;padding:18px 16px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.q-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.q-number{display:inline-block;background:#e3f2fd;color:#1565c0;font-weight:700;font-size:.8rem;padding:2px 10px;border-radius:10px}
+.q-type{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:10px;font-weight:600}
+.q-type.choice{background:#fff3e0;color:#e65100}
+.q-type.judge{background:#e8f5e9;color:#2e7d32}
+.q-text{font-size:.95rem;font-weight:600;margin:10px 0 14px;line-height:1.7}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt{display:block;width:100%;text-align:left;background:#f8fafc;border:2px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:.9rem;cursor:pointer;transition:all .2s;color:#2d3748;line-height:1.5;-webkit-tap-highlight-color:rgba(0,0,0,.05)}
+.opt:active{transform:scale(.98)}
+.opt.selected-correct{border-color:#4caf50;background:#e8f5e9;color:#2e7d32;font-weight:600}
+.opt.selected-wrong{border-color:#f44336;background:#ffebee;color:#c62828}
+.opt.show-correct{border-color:#4caf50;background:#e8f5e9;color:#2e7d32;font-weight:600;opacity:.85}
+.opt.disabled{pointer-events:none;opacity:.6}
+.answer-section{margin-top:12px;padding:0;border-radius:10px;font-size:.85rem;line-height:1.7;display:none}
+.answer-section.show{display:block;padding:12px 14px}
+.answer-section.correct-bg{background:#e8f5e9;border-left:4px solid #4caf50}
+.answer-section.wrong-bg{background:#ffebee;border-left:4px solid #f44336}
+.result-badge{display:inline-block;padding:2px 10px;border-radius:6px;font-size:.8rem;font-weight:700;margin-bottom:6px}
+.result-badge.correct{background:#4caf50;color:#fff}
+.result-badge.wrong{background:#f44336;color:#fff}
+.answer-text{font-weight:600;color:#2e7d32;margin-bottom:4px}
+.explain-text{color:#555}
+@media(max-width:480px){.header h1{font-size:1.1rem}.stats{gap:6px}.stat-item{padding:4px 10px;font-size:.75rem}.container{padding:8px}.question-card{padding:14px 12px}.q-text{font-size:.9rem}.opt{padding:10px 12px;font-size:.85rem}}</style>
+</head>
+<body>
+<div class="header">
+<h1>🧠 头皮护理知识考核（50题）</h1>
+<div class="stats">
+<div class="stat-item">总题数 <span id="totalCount">50</span></div>
+<div class="stat-item">已答 <span id="answeredCount">0</span></div>
+<div class="stat-item">正确 <span id="correctCount">0</span></div>
+<div class="stat-item">错误 <span id="wrongCount">0</span></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+</div>
+<div class="container">
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 1 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">头皮每松弛1寸，目测年龄比实际年龄老多少岁？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 老2~3岁</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 老5~7岁</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 老8~10岁</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 老10~12岁</div>
+</div>
+<div class="answer-section" data-correct="B. 老5~7岁" data-explain="头皮每松弛1寸，目测年龄比实际年龄老5~7岁。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 2 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">头皮表皮层由浅至深的正确排列顺序是？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 基底层→颗粒层→角质层→透明层</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 角质层→颗粒层→透明层→基底层</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 角质层→透明层→颗粒层→基底层</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 颗粒层→角质层→基底层→透明层</div>
+</div>
+<div class="answer-section" data-correct="C. 角质层→透明层→颗粒层→基底层" data-explain="表皮层由浅至深依次为角质层、透明层、颗粒层、基底层。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 3 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">头皮衰老速度是脸部的多少倍？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 3倍</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 4倍</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 6倍</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 8倍</div>
+</div>
+<div class="answer-section" data-correct="C. 6倍" data-explain="头皮衰老速度是脸部的6倍，一次头皮保养相当于6次脸部保养。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 4 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">被称为“毛发之母”的结构是？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 毛囊</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 毛乳头</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 皮脂腺</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 毛球</div>
+</div>
+<div class="answer-section" data-correct="B. 毛乳头" data-explain="毛乳头含丰富血液和神经分布，有专司毛发营养的血管，被称为“毛发之母”。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 5 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">每天正常掉发量的范围是？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 20~40根</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 50~80根</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 80~120根</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 100~150根</div>
+</div>
+<div class="answer-section" data-correct="B. 50~80根" data-explain="每天正常掉发量为50~80根。持续两个月以上每天掉发100根则属于病理性脱发。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 6 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">健康头皮的pH值范围是？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 3.0~4.0</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 4.5~5.5</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 5.5~6.5</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 6.5~7.5</div>
+</div>
+<div class="answer-section" data-correct="B. 4.5~5.5" data-explain="头皮是弱酸性皮肤，pH值在4.5~5.5之间。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 7 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">油性头皮的正确护理方案是？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 清洁+补水+水油平衡</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 清洁+补水+抗敏调理</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 清洁+补水+油脂调节+毛囊净化</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 角质更新+角质清洁spa</div>
+</div>
+<div class="answer-section" data-correct="C. 清洁+补水+油脂调节+毛囊净化" data-explain="油性头皮护理方案为：清洁+补水+油脂调节+毛囊净化。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 8 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">头皮真皮层的厚度约为？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 0.1~0.5毫米</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 1~3毫米</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 5~8毫米</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 8~10毫米</div>
+</div>
+<div class="answer-section" data-correct="B. 1~3毫米" data-explain="真皮层约1~3毫米，内部结构为乳头层、网状层、真皮组织。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 9 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">头发形成过程中，角质蛋白硬化堆积后突破哪一层形成发丝发干？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 真皮层</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 皮下组织</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 表皮层</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 帽状腱膜</div>
+</div>
+<div class="answer-section" data-correct="C. 表皮层" data-explain="毛乳头吸收毛细血管的营养，营养含大量角质蛋白，角质蛋白不断硬化堆积，突破表皮层形成发丝发干。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 10 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">以下哪项属于头皮自由基的内在因素？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 紫外线暴晒</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 高温吹风</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 熬夜压力大内分泌紊乱</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 烫染药水残留</div>
+</div>
+<div class="answer-section" data-correct="C. 熬夜压力大内分泌紊乱" data-explain="内在因素包括熬夜压力大内分泌紊乱、高糖高油饮食、头皮炎症出油量大。其他三项属于外在因素。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 11 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">头油持续多长时间以上可能开始脱发？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 3~6个月</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 6~12个月</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 1~3年</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 3~5年</div>
+</div>
+<div class="answer-section" data-correct="C. 1~3年" data-explain="头油持续1~3年以上开始脱发。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 12 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">生理性头屑的自愈周期约为？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 1~2个月</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 3~4个月</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 5~6个月</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 6~8个月</div>
+</div>
+<div class="answer-section" data-correct="B. 3~4个月" data-explain="生理性头屑由于环境变化产生，头皮自我调节后周期为3~4个月可自愈。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 13 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">男性脂溢性脱发的晚期表现形态是？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. M型</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. M+O型</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 马蹄型/半岛型</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 弥漫型</div>
+</div>
+<div class="answer-section" data-correct="C. 马蹄型/半岛型" data-explain="男性脂溢性脱发过程：前期M型→中期M+O型→晚期马蹄型/半岛型。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 14 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">少年白（少白头）的主要原因是什么？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 长期高压精神紧张</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 先天性遗传</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 营养不良</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 毒素积累过高</div>
+</div>
+<div class="answer-section" data-correct="B. 先天性遗传" data-explain="少年白主要是先天性遗传导致。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 15 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">皮肤体温调节中，每蒸发1克水可带走多少热量？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 1.20千克</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 1.65千克</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 2.43千克</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 3.15千克</div>
+</div>
+<div class="answer-section" data-correct="C. 2.43千克" data-explain="每蒸发1克水可带走2.43千克热量。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 16 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">斑秃的脱发区域大小一般为？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 0.5~1厘米</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 2~5厘米</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 5~10厘米</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 10~15厘米</div>
+</div>
+<div class="answer-section" data-correct="B. 2~5厘米" data-explain="斑秃突然出现圆形或椭圆形脱发斑，大小2-5厘米，可自我恢复周期约三个月。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 17 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">毛细血管中，负责输送营养和养分的是？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 静脉</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 淋巴管</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 动脉</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 汗管</div>
+</div>
+<div class="answer-section" data-correct="C. 动脉" data-explain="动脉输送营养和养分，静脉排除垃圾和毒素。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 18 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">以下哪项不属于头皮的功能？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 调节控制身体温度</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 分解脂肪减少体重</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 吸收及调节身体水分平衡</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 制造头发和麦拉宁色素</div>
+</div>
+<div class="answer-section" data-correct="B. 分解脂肪减少体重" data-explain="头皮功能包括：调节体温、感觉变化、吸收调节水分平衡、制造头发/麦拉宁色素/皮脂/汗水、保护器官。不包括分解脂肪。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 19 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">健康头皮的颜色应该是？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 粉红色</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 青白色</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 黄色</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 暗红色</div>
+</div>
+<div class="answer-section" data-correct="B. 青白色" data-explain="健康头皮颜色为青白色，每个毛囊有2~3根头发，粗细一致。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 20 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">头皮细胞的新陈代谢周期为？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 7~14天</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 14~21天</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 21~28天</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 28~35天</div>
+</div>
+<div class="answer-section" data-correct="B. 14~21天" data-explain="头皮细胞的新陈代谢周期仅为14~21天，一般皮肤细胞为28天。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 21 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">皮肤吸收功能的途径不包括以下哪项？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 角质层</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 毛细血管</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 毛囊</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 皮脂腺</div>
+</div>
+<div class="answer-section" data-correct="B. 毛细血管" data-explain="皮肤吸收通过角质层、毛囊、皮脂腺和汗管途径完成，不包括毛细血管。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 22 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">角质层健康状态下有多少层？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">A. 5~10层</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">B. 15~22层</div>
+<div class="opt" onclick="checkAnswer(this,1)">C. 22~30层</div>
+<div class="opt" onclick="checkAnswer(this,1)">D. 30~50层</div>
+</div>
+<div class="answer-section" data-correct="B. 15~22层" data-explain="健康角质层有15~22层，过度堆积达30~50层为角质肥厚。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 23 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">每个健康毛囊有多少次生长周期？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 8~12次</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 12~18次</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 18~25次</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 25~30次</div>
+</div>
+<div class="answer-section" data-correct="C. 18~25次" data-explain="每个健康毛囊有18~25次生长周期。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 24 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">以下哪项不是控制脱发的措施？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,2)">A. 消除炎症和真菌群</div>
+<div class="opt" onclick="checkAnswer(this,2)">B. 控制油脂分泌</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,2)">C. 增加烫染频率</div>
+<div class="opt" onclick="checkAnswer(this,2)">D. 给毛囊补充营养激活头皮</div>
+</div>
+<div class="answer-section" data-correct="C. 增加烫染频率" data-explain="控制脱发需：消除炎症和真菌群、控制油脂分泌、疏通血液循环、给毛囊补充营养激活头皮。增加烫染频率会加重问题。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 25 题</span><span class="q-type choice">选择题</span></div>
+<div class="q-text">毛乳头被破坏后，毛发的生长情况是？</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,3)">A. 生长速度加快</div>
+<div class="opt" onclick="checkAnswer(this,3)">B. 生长速度减慢但可恢复</div>
+<div class="opt" onclick="checkAnswer(this,3)">C. 毛发变细但不会脱落</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,3)">D. 永远无法再生长</div>
+</div>
+<div class="answer-section" data-correct="D. 永远无法再生长" data-explain="毛乳头被破坏则毛发永远无法再生长，因此毛乳头被称为“毛发之母”。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 26 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">头皮是全身老化最快、自由基含量最高的部位。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="头皮确实是全身老化最快、自由基含量最高的部位。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 27 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">头皮是人体最薄的皮肤，全身没有比它更薄的部位。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="头皮是人体第二薄皮肤，仅次于眼部皮肤。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 28 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">表皮层中的透明层在手掌和脚掌才存在。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="透明层只在手掌和脚掌才有。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 29 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">基底层细胞具有再生能力，每一层平均7天更新一次。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="基底层呈柱状细胞，具有再生能力，每一层平均7天一次，28天代谢一次。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 30 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">毛囊扎根在表皮层中，因此头皮表层的健康直接决定头发质量。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="毛囊扎根在真皮层，而非表皮层。真皮层决定头发生长。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 31 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">头皮分泌油脂的量比脸部肌肤多2倍。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="头皮分泌油脂比脸部肌肤多2倍。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 32 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">敏感性头皮的特征是角质层厚、点状偏红、头皮易痒。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="敏感性头皮的特征是角质层薄（而非厚），点状偏红，头皮易痒。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 33 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">碱性洗发水可以帮助头皮维持健康的弱酸性环境。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="碱性洗发水会破坏头皮的酸碱平衡，头皮是弱酸性皮肤（pH 4.5~5.5），应使用弱酸性洗发水。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 34 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">持续两个月以上每天掉发超过100根属于病理性脱发。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="持续两个月以上每天掉发100根是病理性脱发的判断标准。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 35 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">正常油脂呈酸性，能滋养头皮发根同时阻挡真菌。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="正常油脂呈酸性，滋养头皮发根同时阻挡真菌。但油脂氧化后会变酸性产生腐蚀性侵害毛囊。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 36 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">头皮自由基只会由外部因素（如紫外线、烫染）引起，与内部生活习惯无关。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="头皮自由基既有外在因素（紫外线、烫染、高温吹风），也有内在因素（熬夜、压力大、内分泌紊乱、高糖高油饮食等）。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 37 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">皮脂腺受到挤压或刺激时，出油量会增大。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="皮脂腺受挤压或刺激出油增大，不良作息、熬夜、抽烟喝酒、过冷过热的水都会刺激皮脂腺。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 38 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">病理性头屑可以在3~4个月内自愈。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="3~4个月可自愈的是生理性头屑。病理性头屑由皮炎或严重真菌感染引起，持续6个月以上。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 39 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">女性脱发会像男性一样完全脱光头发。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="女性脱发不会脱光，常见产后、更年期斑秃。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 40 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">斑秃具有自我恢复的可能，周期约三个月。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="斑秃可自我恢复，周期约三个月。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 41 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">皮肤的感觉功能包括单一感觉和复合感觉两类。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="皮肤感觉功能包括单一感觉（触觉、痛觉、压觉、冷觉、温觉）和复合感觉（湿、糙、硬、软、光滑）。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 42 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">健康头皮每个毛囊通常生长2~3根头发，且粗细一致。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="健康头皮颜色青白色，每个毛囊有2~3根头发，粗细一致。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 43 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">头皮炎症的本质是头部菌群不平衡。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="头皮炎症属于头部菌群不平衡，原因包括角质层过厚油脂过多滋生真菌群等。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 44 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">中年白发通常表现为三十岁左右两鬓角出现白发。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="中年白发是三十岁左右两鬓角出现白发，属于白发的三种类型之一。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 45 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">头皮不具备免疫功能，免疫保护只由身体内部系统完成。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="皮肤（包括头皮）是免疫系统的重要组成部分，具备免疫功能。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 46 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">作息不规律会使角质代谢加快，导致角质未成熟就脱落，形成头屑。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="作息不规律使代谢加快，角质未成熟就脱落形成头屑。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 47 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">油脂停留在头皮上与空气氧化结合后会变成碱性物质，腐蚀毛囊。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="油脂停留头皮与空气氧化结合变成酸性产生腐蚀性侵害毛囊，而非碱性。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 48 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">头发的生长周期中，生长期的时间为2~4年。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="头发生长期为2~4年，休止期2~3周，脱落期5~6周。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 49 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">缺乏蛋白质、维生素和微量元素可能导致白发。</div>
+<div class="options">
+<div class="opt" data-correct="true" onclick="checkAnswer(this,0)">✅ 正确</div>
+<div class="opt" onclick="checkAnswer(this,0)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="✅ 正确" data-explain="营养不良缺乏蛋白质维生素和微量元素是白发的重要原因之一。"></div>
+</div>
+<div class="question-card">
+<div class="q-header"><span class="q-number">第 50 题</span><span class="q-type judge">判断题</span></div>
+<div class="q-text">毛囊堵塞的表现是发根有堆积物，解决方案是角质清洁spa。</div>
+<div class="options">
+<div class="opt" onclick="checkAnswer(this,1)">✅ 正确</div>
+<div class="opt" data-correct="true" onclick="checkAnswer(this,1)">❌ 错误</div>
+</div>
+<div class="answer-section" data-correct="❌ 错误" data-explain="毛囊堵塞的表现确实是发根有堆积物，但解决方案是脉冲黑科技去油脂，而非角质清洁spa（角质层过厚的解决方案才是角质更新/角质清洁spa）。"></div>
+</div>
+</div>
+<script>var answered=0,correctCount=0,wrongCount=0;
+function checkAnswer(el,correctIdx){
+var card=el.closest('.question-card');
+if(card.classList.contains('answered'))return;
+card.classList.add('answered');
+var opts=card.querySelectorAll('.opt');
+var clickedIdx=-1;
+for(var i=0;i<opts.length;i++){if(opts[i]===el)clickedIdx=i;}
+var isCorrect=(clickedIdx===correctIdx);
+var answerSection=card.querySelector('.answer-section');
+var correctText=answerSection.getAttribute('data-correct');
+var explainText=answerSection.getAttribute('data-explain');
+for(var i=0;i<opts.length;i++){
+opts[i].classList.add('disabled');
+if(opts[i].getAttribute('data-correct')==='true'){opts[i].classList.add('show-correct');}
+}
+if(isCorrect){
+el.classList.remove('show-correct');
+el.classList.add('selected-correct');
+correctCount++;
+answerSection.className='answer-section show correct-bg';
+answerSection.innerHTML='<div class="result-badge correct">\u2713 回答正确</div><div class="explain-text">'+explainText+'</div>';
+}else{
+el.classList.add('selected-wrong');
+wrongCount++;
+answerSection.className='answer-section show wrong-bg';
+answerSection.innerHTML='<div class="result-badge wrong">\u2717 回答错误</div><div class="answer-text">正确答案：'+correctText+'</div><div class="explain-text">'+explainText+'</div>';
+}
+answered++;
+document.getElementById('answeredCount').textContent=answered;
+document.getElementById('correctCount').textContent=correctCount;
+document.getElementById('wrongCount').textContent=wrongCount;
+document.getElementById('progressBar').style.width=(answered/50*100)+'%';
+}</script>
+</body>
+</html>
