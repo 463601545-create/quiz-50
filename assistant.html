@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>助理加洗与小项目销售实战 · 考试版</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+.container { max-width: 680px; margin: 0 auto; padding: 12px 14px 90px; }
+
+/* 顶部信息栏 */
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: #0f172a;
+  padding: 10px 0 12px;
+  border-bottom: 1px solid rgba(99,102,241,0.15);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.timer {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(239,68,68,0.12);
+  color: #f87171;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.timer.warning { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.timer.danger { animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+.progress-info { font-size: 13px; color: #94a3b8; }
+.progress-info strong { color: #818cf8; font-size: 15px; }
+
+/* 题目卡片 */
+.question-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(99,102,241,0.12);
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 14px;
+}
+.q-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.q-num {
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: #fff;
+  font-size: 12px; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+}
+.q-type-tag {
+  background: rgba(16,185,129,0.15);
+  color: #34d399;
+  font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 4px;
+}
+.q-type-tag.choice { background: rgba(99,102,241,0.15); color: #818cf8; }
+.q-module { font-size: 12px; color: #64748b; margin-left: auto; }
+
+.question-stem { font-size: 15.5px; font-weight: 600; color: #f1f5f9; margin-bottom: 14px; line-height: 1.75; }
+
+.options { display: flex; flex-direction: column; gap: 8px; }
+.option {
+  background: rgba(255,255,255,0.03);
+  border: 1.5px solid rgba(99,102,241,0.1);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14.5px;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.option:active { transform: scale(0.98); }
+.option.selected {
+  border-color: #818cf8;
+  background: rgba(99,102,241,0.12);
+}
+.option-letter {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(99,102,241,0.15);
+  color: #818cf8;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s ease;
+}
+.mode-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #34d399;
+  background: rgba(52,211,153,0.12);
+  border: 1px solid rgba(52,211,153,0.25);
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.option.selected .option-letter {
+  background: #818cf8;
+  color: #fff;
+}
+.option.correct-opt {
+  border-color: #10b981 !important;
+  background: rgba(16,185,129,0.12) !important;
+}
+.option.correct-opt .option-letter {
+  background: #10b981 !important;
+  color: #fff;
+}
+.option.wrong-opt {
+  border-color: #ef4444 !important;
+  background: rgba(239,68,68,0.12) !important;
+}
+.option.wrong-opt .option-letter {
+  background: #ef4444 !important;
+  color: #fff;
+}
+
+.practice-feedback {
+  margin-top: 18px;
+  border-radius: 10px;
+  padding: 14px;
+  border-left: 3px solid;
+}
+.practice-feedback.right {
+  background: rgba(16,185,129,0.06);
+  border-color: #10b981;
+}
+.practice-feedback.wrong {
+  background: rgba(239,68,68,0.06);
+  border-color: #ef4444;
+}
+.feedback-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.practice-feedback.right .feedback-title { color: #10b981; }
+.practice-feedback.wrong .feedback-title { color: #ef4444; }
+.feedback-expl {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.7;
+}
+.feedback-expl strong { color: #cbd5e1; }
+.option-text { flex: 1; }
+
+/* 题号导航 */
+.nav-panel {
+  position: fixed; bottom: 70px; right: 14px;
+  background: #1e293b;
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 12px;
+  padding: 12px;
+  width: 260px;
+  z-index: 200;
+  display: none;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+.nav-panel.show { display: block; }
+.nav-title { font-size: 13px; color: #94a3b8; margin-bottom: 10px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+.nav-close { cursor: pointer; color: #64748b; font-size: 16px; }
+.nav-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; }
+.nav-item {
+  width: 100%; aspect-ratio: 1;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.04);
+  color: #94a3b8;
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+.nav-item.answered { background: rgba(16,185,129,0.2); color: #34d399; }
+.nav-item.current { background: #6366f1; color: #fff; }
+.nav-item:active { transform: scale(0.9); }
+
+.nav-legend { display: flex; gap: 12px; margin-top: 10px; font-size: 11px; color: #64748b; }
+.nav-legend span { display: flex; align-items: center; gap: 4px; }
+.nav-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.lg-answered i { background: rgba(16,185,129,0.3); }
+.lg-unanswered i { background: rgba(255,255,255,0.06); }
+.lg-current i { background: #6366f1; }
+
+/* 底部操作栏 */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #0f172a;
+  border-top: 1px solid rgba(99,102,241,0.15);
+  padding: 10px 14px;
+  display: flex; gap: 10px; align-items: center;
+  max-width: 680px; margin: 0 auto;
+  z-index: 150;
+}
+.btn {
+  padding: 12px 18px;
+  border: none; border-radius: 10px;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-nav {
+  background: rgba(99,102,241,0.12);
+  color: #818cf8;
+  border: 1px solid rgba(99,102,241,0.25);
+  padding: 12px 14px;
+}
+.btn-prev, .btn-next { flex: 1; }
+.btn-prev { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.08); }
+.btn-prev:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-next { background: linear-gradient(135deg, #6366f1, #818cf8); color: #fff; }
+.btn-next:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn-next:active { transform: scale(0.98); }
+.btn-submit {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  flex: 1;
+}
+
+/* 开始页 */
+.start-page { text-align: center; padding: 50px 20px; }
+.start-icon { font-size: 56px; margin-bottom: 20px; }
+.start-page h1 {
+  font-size: 24px;
+  color: #818cf8;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.start-page .subtitle { font-size: 14px; color: #64748b; margin-bottom: 30px; }
+
+.exam-info {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(99,102,241,0.15);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+.exam-info h3 { font-size: 15px; color: #818cf8; margin-bottom: 14px; font-weight: 600; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.info-item {
+  background: rgba(99,102,241,0.06);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+.info-num { font-size: 22px; font-weight: 700; color: #f1f5f9; }
+.info-label { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+.rules {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.9;
+}
+.rules p { margin-bottom: 4px; }
+.rules strong { color: #cbd5e1; }
+
+.btn-start {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-start:active { transform: scale(0.98); }
+
+/* 结果页 */
+.result-page { display: none; padding-top: 20px; }
+.result-page.show { display: block; }
+.score-hero {
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(129,140,248,0.08));
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 20px;
+  padding: 36px 20px 28px;
+  text-align: center;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+.score-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%);
+  animation: rotate 20s linear infinite;
+}
+@keyframes rotate { to { transform: rotate(360deg); } }
+
+.score-big {
+  font-size: 72px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #818cf8, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  position: relative;
+}
+.score-label { font-size: 14px; color: #94a3b8; margin-top: 6px; position: relative; }
+.score-desc {
+  font-size: 15px;
+  color: #cbd5e1;
+  margin-top: 16px;
+  line-height: 1.7;
+  position: relative;
+}
+.score-stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 18px;
+  position: relative;
+}
+.stat-item { text-align: center; }
+.stat-num { font-size: 20px; font-weight: 700; color: #f1f5f9; }
+.stat-label { font-size: 12px; color: #64748b; margin-top: 2px; }
+.stat-item.correct .stat-num { color: #34d399; }
+.stat-item.wrong .stat-num { color: #f87171; }
+
+.time-used {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #94a3b8;
+  position: relative;
+}
+.time-used strong { color: #fbbf24; }
+
+/* 模块得分 */
+.module-section {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(99,102,241,0.1);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.module-section h3 { font-size: 15px; color: #818cf8; margin-bottom: 14px; font-weight: 600; }
+.module-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(99,102,241,0.06);
+  font-size: 13.5px;
+}
+.module-row:last-child { border-bottom: none; }
+.module-name { flex: 1; color: #cbd5e1; }
+.module-score { color: #818cf8; font-weight: 600; margin-right: 12px; min-width: 50px; text-align: right; }
+.module-bar-wrap { width: 80px; height: 6px; background: rgba(99,102,241,0.1); border-radius: 3px; overflow: hidden; }
+.module-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+/* 错题区 */
+.wrong-section { margin-top: 20px; margin-bottom: 30px; }
+.wrong-section h3 { font-size: 15px; color: #f87171; margin-bottom: 14px; font-weight: 600; }
+
+.wrong-card {
+  background: rgba(248,113,113,0.04);
+  border: 1px solid rgba(248,113,113,0.12);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.wrong-q-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.wrong-q-num { font-size: 12px; font-weight: 700; color: #f87171; }
+.wrong-q-type { font-size: 11px; color: #fca5a5; background: rgba(248,113,113,0.12); padding: 1px 6px; border-radius: 3px; }
+.wrong-stem { font-size: 14px; color: #e2e8f0; margin-bottom: 10px; line-height: 1.65; font-weight: 500; }
+.wrong-answer-row {
+  font-size: 12.5px;
+  padding: 5px 0;
+  display: flex; gap: 8px;
+}
+.wrong-answer-row .label { color: #94a3b8; min-width: 55px; }
+.wrong-answer-row .user-ans { color: #f87171; }
+.wrong-answer-row .correct-ans { color: #34d399; }
+.wrong-expl {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(99,102,241,0.06);
+  border-left: 3px solid #6366f1;
+  border-radius: 0 6px 6px 0;
+  font-size: 12.5px;
+  color: #a5b4fc;
+  line-height: 1.7;
+}
+.wrong-expl strong { color: #818cf8; }
+
+/* 提交确认弹窗 */
+.modal-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-mask.show { display: flex; }
+.modal {
+  background: #1e293b;
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+}
+.modal h3 { font-size: 18px; color: #f1f5f9; margin-bottom: 10px; }
+.modal p { font-size: 14px; color: #94a3b8; margin-bottom: 6px; line-height: 1.6; }
+.modal .unanswered-count { color: #fbbf24; font-weight: 700; font-size: 18px; margin: 12px 0; }
+.modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+.modal-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modal-btn.cancel { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.08); }
+.modal-btn.confirm { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+
+.restart-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+@media (max-width: 480px) {
+  .container { padding: 8px 12px 80px; }
+  .score-big { font-size: 60px; }
+  .nav-panel { width: calc(100vw - 28px); right: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- 开始页 -->
+<div id="startPage" class="start-page">
+  <div class="start-icon">📝</div>
+  <h1>助理加洗与小项目销售实战</h1>
+  <p class="subtitle">洗头床上的黄金三分钟 · 助理销售能力考核</p>
+
+  <div class="exam-info">
+    <h3>📋 考试信息</h3>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-num">50</div>
+        <div class="info-label">题量</div>
+      </div>
+      <div class="info-item">
+        <div class="info-num">45</div>
+        <div class="info-label">考试分钟</div>
+      </div>
+      <div class="info-item">
+        <div class="info-num">30</div>
+        <div class="info-label">选择题</div>
+      </div>
+      <div class="info-item">
+        <div class="info-num">20</div>
+        <div class="info-label">判断题</div>
+      </div>
+    </div>
+    <div class="rules">
+      <p>• <strong>答完即判</strong>：选完立刻显示对错和解析</p>
+      <p>• <strong>答案锁定</strong>：答过不能改，不能回看上一题</p>
+      <p>• <strong>随机出题</strong>：题序和选项每次都打乱</p>
+      <p>• <strong>限时45分钟</strong>：45题及格（90分）</p>
+    </div>
+  </div>
+
+  <button class="btn-start" onclick="startExam('subject1')">🎯 科目一模式（答完即判·不能改）</button>
+  <button class="btn-start" style="margin-top:12px;background:linear-gradient(135deg,#10b981,#059669);" onclick="startExam('practice')">📚 练习模式（可回看·可改答案）</button>
+</div>
+
+<!-- 考试页 -->
+<div id="examPage" style="display:none;">
+  <div class="top-bar">
+    <div class="timer" id="timer">⏱ 45:00</div>
+    <div class="mode-tag" id="modeTag">📚 练习模式</div>
+    <div class="progress-info">
+      <strong id="answeredCount">0</strong> / 50 已答
+    </div>
+    <button class="btn btn-nav" onclick="toggleNav()">📋 题号</button>
+  </div>
+
+  <div id="questionArea"></div>
+</div>
+
+<!-- 题号导航面板 -->
+<div class="nav-panel" id="navPanel">
+  <div class="nav-title">
+    <span>题目导航</span>
+    <span class="nav-close" onclick="toggleNav()">✕</span>
+  </div>
+  <div class="nav-grid" id="navGrid"></div>
+  <div class="nav-legend">
+    <span class="lg-current"><i></i> 当前</span>
+    <span class="lg-answered"><i></i> 已答</span>
+    <span class="lg-unanswered"><i></i> 未答</span>
+  </div>
+</div>
+
+<!-- 底部操作栏 -->
+<div class="bottom-bar" id="bottomBar" style="display:none;">
+  <button class="btn btn-prev" id="prevBtn" onclick="prevQuestion()" disabled>上一题</button>
+  <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()">下一题</button>
+  <button class="btn btn-submit" id="submitBtn" onclick="confirmSubmit()" style="display:none;">交卷</button>
+</div>
+
+<!-- 确认交卷弹窗 -->
+<div class="modal-mask" id="submitModal">
+  <div class="modal">
+    <h3>确认交卷？</h3>
+    <p>还有 <span class="unanswered-count" id="unansweredCount">0</span> 道题未作答</p>
+    <p style="font-size:12px;color:#64748b;">交卷后无法修改答案</p>
+    <div class="modal-buttons">
+      <button class="modal-btn cancel" onclick="closeSubmitModal()">继续答题</button>
+      <button class="modal-btn confirm" onclick="submitExam()">确认交卷</button>
+    </div>
+  </div>
+</div>
+
+<!-- 结果页 -->
+<div id="resultPage" class="result-page">
+  <div class="score-hero">
+    <div class="score-big" id="finalScore">0</div>
+    <div class="score-label">总分 50 分</div>
+    <div class="score-desc" id="scoreDesc"></div>
+    <div class="score-stats">
+      <div class="stat-item correct">
+        <div class="stat-num" id="correctCount">0</div>
+        <div class="stat-label">答对</div>
+      </div>
+      <div class="stat-item wrong">
+        <div class="stat-num" id="wrongCount">0</div>
+        <div class="stat-label">答错</div>
+      </div>
+    </div>
+    <div class="time-used">用时 <strong id="timeUsed">--:--</strong></div>
+  </div>
+
+  <div class="module-section">
+    <h3>📊 各模块得分</h3>
+    <div id="moduleStats"></div>
+  </div>
+
+  <div class="wrong-section" id="wrongSection" style="display:none;">
+    <h3>❌ 错题回顾（<span id="wrongTotal">0</span>题）</h3>
+    <div id="wrongList"></div>
+  </div>
+
+  <button class="restart-btn" onclick="restartExam()">🔄 重新开始</button>
+</div>
+
+</div>
+
+<script>
+// 题库
+const questionBank = [
+  { type:"choice", module:"岗位认知", stem:"洗头床对门店的真正定位是什么？", options:["洗头床是门店的成本位","洗头床是门店离钱最近的地方","洗头床只是基础服务环节","洗头床是新人练手的地方"], answer:1, explanation:"洗头床不是成本位，是门店离钱最近的地方，也是顾客离信任最近的地方。" },
+  { type:"choice", module:"岗位认知", stem:"助理的岗位定位应该是什么？", options:["洗头工，把头发洗干净就行","顾客体验第一关","发型师的助手，只负责打杂","负责推销产品的人员"], answer:1, explanation:"你不是洗头工，是顾客体验第一关。助理是顾客进店后接触最久的岗位。" },
+  { type:"choice", module:"岗位认知", stem:"洗加护的总时长大约是多少，比发型师剪发时间还长？", options:["20分钟","30分钟","40分钟","60分钟"], answer:2, explanation:"洗加护约40分钟，比发型师剪发时间还长，是顾客聊得最放松的时段。" },
+  { type:"choice", module:"项目清单", stem:"加洗类和小项目类的价格区间分别是多少？", options:["加洗5-10元，小项目20-50元","加洗10-30元，小项目30-128元","加洗30-50元，小项目100-200元","加洗50-100元，小项目200元以上"], answer:1, explanation:"加洗10-30元、小项目30-128元——低决策、高频次、易开口，新手从加洗起步。" },
+  { type:"choice", module:"项目清单", stem:"新手助理做销售，应该从哪类项目起步？", options:["直接推高价小项目","从加洗起步","推居家产品","推会员卡"], answer:1, explanation:"加洗类属于低门槛高频次，新手从加洗起步更容易开口、更容易成交，建立信心后再推小项目。" },
+  { type:"choice", module:"项目清单", stem:"\"升级洗法\"具体包含哪些内容？", options:["多洗一遍洗发水","两遍洗加头皮按摩加肩颈放松","用更贵的洗发水","延长冲水时间"], answer:1, explanation:"升级洗法：两遍洗加头皮按摩加肩颈放松，多花10分钟，体验完全不同。" },
+  { type:"choice", module:"项目清单", stem:"顾客刚做完烫染，最应该推荐哪类项目？", options:["控油洗发水","发膜水疗","防脱洗发","头皮深层清洁"], answer:1, explanation:"发膜水疗针对烫染后修复、锁色，是烫染顾客的核心需求。" },
+  { type:"choice", module:"项目清单", stem:"升级洗发水应该依据什么来选择？", options:["按价格高低选","按顾客头皮状况对症选","按顾客消费能力选","按店里库存选"], answer:1, explanation:"升级洗发水：控油、去屑、防脱、柔顺，要按顾客头皮状况对症选，而不是盲目推贵的。" },
+  { type:"choice", module:"项目清单", stem:"居家产品（洗发水、发膜外卖）的核心目的是什么？", options:["清库存","把效果延续到家里","提高客单价","完成厂家任务"], answer:1, explanation:"居家产品的价值在于把效果延续到家里，让顾客离店后依然有好的发质表现，同时带来复购。" },
+  { type:"choice", module:"开口时机", stem:"黄金三分钟的第一个开口时机是什么时候？", options:["顾客刚进门时","冲水打湿时","剪发时","结账时"], answer:1, explanation:"三个开口时机：1.冲水打湿时 2.洗第一遍时 3.按摩放松时。" },
+  { type:"choice", module:"开口时机", stem:"黄金三分钟的第二个开口时机是什么时候？", options:["冲水打湿时","洗第一遍时","按摩放松时","吹干时"], answer:1, explanation:"三个开口时机：1.冲水打湿时 2.洗第一遍时 3.按摩放松时。" },
+  { type:"choice", module:"开口时机", stem:"为什么按摩放松时适合讲小项目？", options:["因为顾客快走了要抓紧","顾客最舒服、话最多，边按边说不生硬","因为这时候顾客不好意思拒绝","因为按摩时间最长"], answer:1, explanation:"按摩放松时顾客最舒服、话最多，顺带讲小项目，边按边说不生硬，接受度最高。" },
+  { type:"choice", module:"开口时机", stem:"冲水打湿时，发现顾客头皮出油，最合适的开口话术是？", options:["姐，你头皮太油了，得治","姐，你头皮这块有点出油，我给你用控油的哈？","姐，要不要加个控油项目？68元","姐，你这个情况不做护理会越来越严重"], answer:1, explanation:"冲水打湿时的话术：姐，你头皮这块有点出油，我给你用控油的哈？先陈述观察到的事实，再给方案，语气自然。" },
+  { type:"choice", module:"需求识别", stem:"识别顾客需求的三步方法是什么？", options:["问、答、推","看、摸、听","洗、按、吹","看、问、报价"], answer:1, explanation:"顾客不会说，但头发会说。识别需求靠看、摸、听三步。" },
+  { type:"choice", module:"需求识别", stem:"\"看\"这个环节要重点观察什么？", options:["顾客的穿着打扮","头皮出油头屑泛红、发尾分叉干枯、烫染痕迹","顾客的手机型号","顾客的同伴"], answer:1, explanation:"看头皮（出油、头屑、泛红）、看发尾（分叉、干枯）、看烫染痕迹。" },
+  { type:"choice", module:"需求识别", stem:"\"摸\"这个环节要摸什么？", options:["只摸头发","头发打结粗糙断发情况，以及头皮软硬敏感度","只摸头皮","摸顾客的肩膀判断疲劳"], answer:1, explanation:"摸头发：打结、粗糙、断发多；摸头皮：软硬、敏感、按下去舒不舒服。" },
+  { type:"choice", module:"需求识别", stem:"顾客嘴上说\"随便洗洗就行\"，助理应该怎么做？", options:["就按普通洗，不推荐任何项目","顾客头发已经把需求写在头上了，主动观察判断","直接问顾客想加什么项目","等发型师来决定"], answer:1, explanation:"顾客嘴上说随便洗洗，头发早就把需求写在头上了。助理要主动看、摸、听，自己发现需求。" },
+  { type:"choice", module:"话术对比", stem:"开口公式的正确顺序是什么？", options:["报价→说效果→促成","发现问题→说感受→给方案→轻报价","先做→后说→再报价","夸顾客→推项目→给优惠"], answer:1, explanation:"开口公式：发现问题→说感受→给方案→轻报价。先关心，再谈钱，顾客更容易接受。" },
+  { type:"choice", module:"话术对比", stem:"\"你头发这么差，不护理不行\"这句话属于哪种话术？", options:["关心式","硬推式","专业式","体验式"], answer:1, explanation:"这属于硬推式话术，给顾客的感受是被推销、想闭眼装睡，甚至引起反感。" },
+  { type:"choice", module:"话术对比", stem:"关心式话术带给顾客的感受是什么？", options:["被推销、想逃避","被关心、愿意试","被强迫、不舒服","被忽视、无所谓"], answer:1, explanation:"关心式话术让顾客感受到被关心，从而愿意尝试。对比硬推式，效果差别很大。" },
+  { type:"choice", module:"加洗场景", stem:"油皮头屑顾客的加洗话术重点应该是什么？", options:["强调去屑产品多贵","控油洗两遍加头皮按摩，洗完能撑一天不油","建议顾客剃短","让顾客自己回家洗"], answer:1, explanation:"油皮头屑场景：姐，你这头皮出油有点快，我给你用控油的，洗两遍加头皮按摩，洗完能撑一天不油。" },
+  { type:"choice", module:"加洗场景", stem:"顾客刚染完头发，加洗话术应该强调什么？", options:["颜色不好看","色素还不稳定，做个水疗锁色，颜色保持得久些","建议重新染一次","染发伤发以后别染了"], answer:1, explanation:"烫染后干枯场景：你刚染完，色素还不稳定，做个水疗锁色，颜色保持得久些，发尾也不干。" },
+  { type:"choice", module:"加洗场景", stem:"换季掉发顾客的加洗话术应该怎么说？", options:["你快要秃了，赶紧治","最近换季掉发正常，我给你用防脱的洗，指腹按摩头皮促进循环","掉发是遗传，没办法","建议去医院看医生"], answer:1, explanation:"换季掉发场景：最近换季掉发正常，我给你用防脱的洗，指腹按摩头皮促进循环，你放松睡一会儿。先安抚，再给方案。" },
+  { type:"choice", module:"异议处理", stem:"顾客说\"太贵了\"，正确的接法是什么？", options:["不贵呀","那就算了","姐，是比普通洗贵XX，但你头皮这个情况，做一次管X天，平均一天才几块钱","我们还有更便宜的"], answer:2, explanation:"正确接法是把总价拆成单价：是比普通洗贵XX，但做一次管X天，平均一天才几块钱。让顾客看到性价比。" },
+  { type:"choice", module:"异议处理", stem:"顾客说\"下次吧\"，正确的接法是什么？", options:["好的，那下次再说","没事姐，这次先给你抹点精华体验一下，感受好了下次再做","那今天有活动，便宜点给你","你不做会后悔的"], answer:1, explanation:"正确接法：不放弃，但也不硬推——这次先给体验，降低门槛，感受好了下次再做。" },
+  { type:"choice", module:"异议处理", stem:"顾客说\"你们就是想让我加钱\"，正确的接法是什么？", options:["脸红辩解，说不出话","马上否认，说不是这个意思","笑着说姐你说对一半，我们是想让你头发更好，顺便多个业绩，你舒服了才会常来嘛","直接结束服务"], answer:2, explanation:"坦诚承认一半，反而更能建立信任：我们是想让你头发更好，顺便多个业绩，你舒服了才会常来。异议不是拒绝，是顾客在等你给一个理由。" },
+  { type:"choice", module:"销售红线", stem:"以下哪句话触碰了销售红线？", options:["姐，你头皮有点出油，我给你用控油的","你头皮有病变，再不护理要脱发","发尾摸着有点干，等下给你抹个发膜","这个就多20块，你体验下"], answer:1, explanation:"不说\"你头皮有病变，再不护理要脱发\"——制造焦虑就是欺诈，平台和法律都是红线。" },
+  { type:"choice", module:"销售红线", stem:"任何加洗加项目，动手前必须先做什么？", options:["先做，做完再说","先报价、顾客点头再动手","先问发型师","先看顾客消费记录"], answer:1, explanation:"不先做后说：任何加洗加项目，先报价、顾客点头再动手，不能洗完才说加了钱。" },
+  { type:"choice", module:"21天训练", stem:"21天训练计划第一周的训练重点是什么？", options:["练成交","练开口","练眼睛——说出顾客头皮或头发的1个问题","练手法"], answer:2, explanation:"第1周练眼睛：每洗一个头，说出顾客头皮或头发的1个问题，记在本子上，不开口也行。" },
+  { type:"choice", module:"21天训练", stem:"21天训练计划第三周的目标加洗率是多少？", options:["10%","20%","30%","50%"], answer:2, explanation:"第3周练成交，目标加洗率30%，每天晚复盘三句话：今开了几个口？成了几个？明天哪个顾客可以再跟？" },
+  { type:"judge", module:"岗位认知", stem:"助理就是洗头工，把顾客的头发洗干净就完成任务了。", options:["正确","错误"], answer:1, explanation:"你不是洗头工，是顾客体验第一关。洗头床不是成本位，是门店离钱最近的地方。" },
+  { type:"judge", module:"岗位认知", stem:"洗头床是门店离钱最近的地方，也是顾客离信任最近的地方。", options:["正确","错误"], answer:0, explanation:"这是课程的核心观点。洗头床不是成本位，而是创造业绩和建立信任的关键场景。" },
+  { type:"judge", module:"岗位认知", stem:"沟通铁律是：先肯定再建议、用期待不用指责、热情洋溢传递信心。", options:["正确","错误"], answer:0, explanation:"沟通铁律贯穿全部沟通场景：先肯定再建议、用期待不用指责、热情洋溢传递信心。" },
+  { type:"judge", module:"项目清单", stem:"加洗类的价格区间是10-30元，小项目类是30-128元。", options:["正确","错误"], answer:0, explanation:"加洗10-30元、小项目30-128元，属于低决策、高频次、易开口的项目结构。" },
+  { type:"judge", module:"项目清单", stem:"新手助理应该直接推高价小项目，这样业绩来得快。", options:["正确","错误"], answer:1, explanation:"新手应从加洗起步，低门槛高频次，先建立开口习惯和成交信心，再逐步推小项目。" },
+  { type:"judge", module:"项目清单", stem:"升级洗发水应该按价格高低来选择推荐给顾客。", options:["正确","错误"], answer:1, explanation:"应按顾客头皮状况对症选：控油、去屑、防脱、柔顺各有对应人群，不是越贵越好。" },
+  { type:"judge", module:"项目清单", stem:"居家产品的作用是把效果延续到家里，同时带来复购。", options:["正确","错误"], answer:0, explanation:"洗发水、发膜外卖等居家产品，能让顾客离店后保持效果，也是持续复购的入口。" },
+  { type:"judge", module:"开口时机", stem:"黄金三分钟的三个开口时机是：冲水打湿时、洗第一遍时、按摩放松时。", options:["正确","错误"], answer:0, explanation:"三个时机分别是冲水打湿时、洗第一遍时、按摩放松时，对应不同的话术切入点。" },
+  { type:"judge", module:"开口时机", stem:"按摩放松时顾客最舒服、话最多，这时候讲小项目最自然。", options:["正确","错误"], answer:0, explanation:"按摩放松时边按边说不生硬，顾客接受度最高。时机对了，开口不尴尬。" },
+  { type:"judge", module:"需求识别", stem:"顾客嘴上说\"随便洗洗\"，说明他真的没有任何需求。", options:["正确","错误"], answer:1, explanation:"顾客嘴上说随便洗洗，头发早就把需求写在头上了。要靠看、摸、听主动发现。" },
+  { type:"judge", module:"需求识别", stem:"识别顾客需求靠看、摸、听三步：看头皮发尾、摸头发头皮、听顾客随口说的话。", options:["正确","错误"], answer:0, explanation:"看：头皮出油头屑泛红、发尾分叉干枯、烫染痕迹；摸：打结粗糙断发、头皮敏感度；听：顾客随口说的掉发、头痒、头发干。" },
+  { type:"judge", module:"话术对比", stem:"\"姐，要不要加个护理？才68\"这种直接问要不要的话术效果最好。", options:["正确","错误"], answer:1, explanation:"这属于硬推式，顾客感受是被推销、想闭眼装睡。应该用关心式：先发现问题，说感受，再给方案。" },
+  { type:"judge", module:"话术对比", stem:"开口公式是：发现问题→说感受→给方案→轻报价。", options:["正确","错误"], answer:0, explanation:"这个公式让顾客先感受到被关心，最后才谈价格，接受度远高于上来就报价。" },
+  { type:"judge", module:"话术对比", stem:"加洗的诀窍是先做再说，做完再告诉顾客加了钱，这样成交率高。", options:["正确","错误"], answer:1, explanation:"这是销售红线。任何加洗加项目必须先报价、顾客点头再动手，不能洗完才说加了钱。" },
+  { type:"judge", module:"异议处理", stem:"顾客说\"太贵了\"，直接回答\"不贵呀\"是最有效的处理方式。", options:["正确","错误"], answer:1, explanation:"直接说\"不贵呀\"是否定顾客感受。正确做法是拆解单价：做一次管X天，平均一天才几块钱。" },
+  { type:"judge", module:"异议处理", stem:"异议不是拒绝，是顾客在等你给一个理由。", options:["正确","错误"], answer:0, explanation:"顾客说贵、说下次、说你们想让我加钱，本质上都是在等一个合理的理由，不是真的拒绝。" },
+  { type:"judge", module:"销售红线", stem:"为了促进成交，可以适当夸大顾客的头皮问题，制造一点焦虑。", options:["正确","错误"], answer:1, explanation:"不夸大问题。说\"你头皮有病变，再不护理要脱发\"制造焦虑就是欺诈，平台和法律都是红线。" },
+  { type:"judge", module:"销售红线", stem:"一次只推一个项目，顾客闭眼躺40分钟不是来听菜单的。", options:["正确","错误"], answer:0, explanation:"不连环推销。一次只推一个项目，聚焦、自然，反而更容易成交。" },
+  { type:"judge", module:"销售红线", stem:"为了吸引顾客，可以先用\"免费体验\"把顾客吸引过来，做完再收费。", options:["正确","错误"], answer:1, explanation:"不虚假免费。一次欺骗，永久失信，这是绝对的红线。" },
+  { type:"judge", module:"21天训练", stem:"21天训练第一周只要求说出顾客的1个问题记在本子上，不开口也可以。", options:["正确","错误"], answer:0, explanation:"第1周练眼睛，先建立观察习惯，不强迫开口，降低心理压力。第2周才开始练开口。" }
+];
+
+const moduleNames = ["岗位认知","项目清单","开口时机","需求识别","话术对比","加洗场景","异议处理","销售红线","21天训练"];
+
+let questions = [];
+let currentIndex = 0;
+let userAnswers = [];
+let timerInterval = null;
+let totalSeconds = 45 * 60; // 45分钟
+let startTime = 0;
+let examStarted = false;
+let examMode = 'exam'; // 'exam' 考试模式 / 'practice' 练习模式
+
+// 打乱数组
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startExam(mode) {
+  examMode = mode || 'exam';
+  // 随机打乱题库
+  questions = shuffle(questionBank).map(q => {
+    // 打乱选项
+    const correctText = q.options[q.answer];
+    const shuffledOpts = shuffle(q.options);
+    return {
+      ...q,
+      options: shuffledOpts,
+      answer: shuffledOpts.indexOf(correctText)
+    };
+  });
+
+  userAnswers = new Array(questions.length).fill(-1);
+  currentIndex = 0;
+  totalSeconds = 45 * 60;
+  startTime = Date.now();
+  examStarted = true;
+
+  document.getElementById('startPage').style.display = 'none';
+  document.getElementById('examPage').style.display = 'block';
+  document.getElementById('bottomBar').style.display = 'flex';
+
+  // 模式差异化处理
+  const submitBtn = document.getElementById('submitBtn');
+  const timer = document.getElementById('timer');
+  const modeTag = document.getElementById('modeTag');
+  const navBtn = document.querySelector('.btn-nav');
+  const prevBtn = document.getElementById('prevBtn');
+
+  if (examMode === 'practice') {
+    if (timer) timer.style.display = 'none';
+    if (navBtn) navBtn.style.display = 'block';
+    if (prevBtn) prevBtn.style.display = 'block';
+    setModeTag('📚 练习模式', '#34d399', 'rgba(52,211,153,0.12)', 'rgba(52,211,153,0.25)');
+  } else if (examMode === 'subject1') {
+    if (timer) timer.style.display = 'block';
+    if (navBtn) navBtn.style.display = 'none';
+    if (prevBtn) prevBtn.style.display = 'none';
+    setModeTag('🎯 科目一模式', '#fbbf24', 'rgba(251,191,36,0.12)', 'rgba(251,191,36,0.25)');
+  } else {
+    if (timer) timer.style.display = 'block';
+    if (navBtn) navBtn.style.display = 'block';
+    if (prevBtn) prevBtn.style.display = 'block';
+    setModeTag('📝 考试模式', '#818cf8', 'rgba(129,140,248,0.12)', 'rgba(129,140,248,0.25)');
+  }
+
+  renderNavGrid();
+  renderQuestion();
+  if (examMode !== 'practice') startTimer();
+}
+
+function setModeTag(text, color, bg, border) {
+  const el = document.getElementById('modeTag');
+  if (!el) return;
+  el.textContent = text;
+  el.style.color = color;
+  el.style.background = bg;
+  el.style.borderColor = border;
+}
+
+// 打开页面直接进入科目一模式
+window.addEventListener('load', function () {
+  startExam('subject1');
+});
+
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    totalSeconds--;
+    updateTimerDisplay();
+    if (totalSeconds <= 0) {
+      clearInterval(timerInterval);
+      submitExam(); // 自动交卷
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+  const s = (totalSeconds % 60).toString().padStart(2, '0');
+  const timerEl = document.getElementById('timer');
+  timerEl.textContent = `⏱ ${m}:${s}`;
+  timerEl.className = 'timer';
+  if (totalSeconds <= 300) timerEl.classList.add('warning'); // 5分钟
+  if (totalSeconds <= 60) timerEl.classList.add('danger'); // 1分钟
+}
+
+function renderNavGrid() {
+  const grid = document.getElementById('navGrid');
+  let html = '';
+  for (let i = 0; i < questions.length; i++) {
+    let cls = 'nav-item';
+    if (i === currentIndex) cls += ' current';
+    if (userAnswers[i] !== -1) cls += ' answered';
+    html += `<div class="${cls}" onclick="jumpTo(${i})">${i+1}</div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const selected = userAnswers[currentIndex];
+  const isPractice = examMode === 'practice';
+  const showFeedback = examMode === 'practice' || examMode === 'subject1';
+
+  const typeLabel = q.type === 'choice' ? '选择题' : '判断题';
+  const typeClass = q.type === 'choice' ? 'q-type-tag choice' : 'q-type-tag';
+
+  let optionsHtml = '';
+  const letters = q.type === 'choice' ? ['A','B','C','D'] : ['✓','✗'];
+  q.options.forEach((opt, i) => {
+    let cls = 'option';
+    if (i === selected) cls += ' selected';
+    // 练习模式：已选后显示对错
+    if (showFeedback && selected !== -1) {
+      if (i === q.answer) cls += ' correct-opt';
+      if (i === selected && i !== q.answer) cls += ' wrong-opt';
+    }
+    optionsHtml += `
+      <div class="${cls}" onclick="selectOption(${i})">
+        <div class="option-letter">${letters[i]}</div>
+        <div class="option-text">${opt}</div>
+      </div>
+    `;
+  });
+
+  // 练习模式解析区
+  let explHtml = '';
+  if (showFeedback && selected !== -1) {
+    const isRight = selected === q.answer;
+    explHtml = `
+      <div class="practice-feedback ${isRight ? 'right' : 'wrong'}">
+        <div class="feedback-title">${isRight ? '✅ 回答正确' : '❌ 回答错误'}</div>
+        <div class="feedback-expl"><strong>解析：</strong>${q.explanation}</div>
+      </div>
+    `;
+  }
+
+  const area = document.getElementById('questionArea');
+  area.innerHTML = `
+    <div class="question-card">
+      <div class="q-header">
+        <span class="q-num">第 ${currentIndex + 1} 题</span>
+        <span class="${typeClass}">${typeLabel}</span>
+        <span class="q-module">${q.module}</span>
+      </div>
+      <div class="question-stem">${q.stem}</div>
+      <div class="options">${optionsHtml}</div>
+      ${explHtml}
+    </div>
+  `;
+
+  // 更新已答数
+  const answered = userAnswers.filter(a => a !== -1).length;
+  document.getElementById('answeredCount').textContent = answered;
+
+  // 更新按钮状态
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  const isLast = currentIndex === questions.length - 1;
+  const nextBtnEl = document.getElementById('nextBtn');
+  nextBtnEl.style.display = isLast ? 'none' : 'block';
+  nextBtnEl.disabled = (examMode === 'subject1' && selected === -1);
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) {
+    submitBtn.style.display = isLast ? 'block' : 'none';
+    submitBtn.textContent = (examMode === 'practice') ? '查看成绩' : '交卷';
+  }
+
+  // 更新导航
+  renderNavGrid();
+
+  // 滚动到顶部
+  window.scrollTo(0, 0);
+}
+
+function selectOption(index) {
+  // 科目一模式：答过就锁定，不能改
+  if (examMode === 'subject1' && userAnswers[currentIndex] !== -1) return;
+  userAnswers[currentIndex] = index;
+  renderQuestion();
+}
+
+function prevQuestion() {
+  if (currentIndex > 0) { currentIndex--; renderQuestion(); }
+  toggleNav(false);
+}
+
+function nextQuestion() {
+  if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); }
+  toggleNav(false);
+}
+
+function jumpTo(i) {
+  currentIndex = i;
+  renderQuestion();
+  toggleNav(false);
+}
+
+function toggleNav(show) {
+  const panel = document.getElementById('navPanel');
+  if (show === undefined) {
+    panel.classList.toggle('show');
+  } else {
+    panel.classList.toggle('show', show);
+  }
+}
+
+function confirmSubmit() {
+  if (examMode === 'practice') { submitExam(); return; }
+  const unanswered = userAnswers.filter(a => a === -1).length;
+  document.getElementById('unansweredCount').textContent = unanswered;
+  document.getElementById('submitModal').classList.add('show');
+}
+
+function closeSubmitModal() {
+  document.getElementById('submitModal').classList.remove('show');
+}
+
+function submitExam() {
+  clearInterval(timerInterval);
+  closeSubmitModal();
+
+  const usedSeconds = Math.floor((Date.now() - startTime) / 1000);
+  const usedMin = Math.floor(usedSeconds / 60).toString().padStart(2, '0');
+  const usedSec = (usedSeconds % 60).toString().padStart(2, '0');
+
+  let correct = 0;
+  questions.forEach((q, i) => { if (userAnswers[i] === q.answer) correct++; });
+  const wrong = questions.length - correct;
+  const score = correct;
+
+  document.getElementById('examPage').style.display = 'none';
+  document.getElementById('bottomBar').style.display = 'none';
+  const rp = document.getElementById('resultPage');
+  rp.style.display = 'block';
+  rp.classList.add('show');
+
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('correctCount').textContent = correct;
+  document.getElementById('wrongCount').textContent = wrong;
+  document.getElementById('timeUsed').textContent = `${usedMin}:${usedSec}`;
+
+  let desc = '';
+  if (score >= 48) desc = '🏆 优秀！' + (score >= 50 ? '满分通过，' : '') + '内容掌握非常扎实，可以带新人了。';
+  else if (score >= 45) desc = '✅ 及格通过（90分以上），基础掌握到位，细节再补一补。';
+  else desc = '❌ 不及格（低于90分），建议重新学习课程内容后再考一次。';
+  document.getElementById('scoreDesc').textContent = desc;
+
+  // 模块统计
+  const moduleStats = {};
+  moduleNames.forEach(m => { moduleStats[m] = { total: 0, correct: 0 }; });
+  questions.forEach((q, i) => {
+    moduleStats[q.module].total++;
+    if (userAnswers[i] === q.answer) moduleStats[q.module].correct++;
+  });
+
+  let statsHtml = '';
+  moduleNames.forEach(m => {
+    const s = moduleStats[m];
+    if (s.total === 0) return;
+    const pct = Math.round(s.correct / s.total * 100);
+    const color = pct >= 80 ? '#34d399' : pct >= 60 ? '#818cf8' : '#f87171';
+    statsHtml += `
+      <div class="module-row">
+        <span class="module-name">${m}</span>
+        <span class="module-score">${s.correct}/${s.total}</span>
+        <div class="module-bar-wrap"><div class="module-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>
+    `;
+  });
+  document.getElementById('moduleStats').innerHTML = statsHtml;
+
+  // 错题
+  const wrongIndices = [];
+  questions.forEach((q, i) => { if (userAnswers[i] !== q.answer) wrongIndices.push(i); });
+
+  if (wrongIndices.length > 0) {
+    document.getElementById('wrongSection').style.display = 'block';
+    document.getElementById('wrongTotal').textContent = wrongIndices.length;
+    let html = '';
+    const letters = ['A','B','C','D'];
+    wrongIndices.forEach(idx => {
+      const q = questions[idx];
+      const userAns = userAnswers[idx];
+      const userText = q.type === 'judge'
+        ? (userAns === 0 ? '正确' : '错误')
+        : `${letters[userAns]}. ${q.options[userAns]}`;
+      const correctText = q.type === 'judge'
+        ? (q.answer === 0 ? '正确' : '错误')
+        : `${letters[q.answer]}. ${q.options[q.answer]}`;
+      const typeLabel = q.type === 'choice' ? '选择' : '判断';
+
+      html += `
+        <div class="wrong-card">
+          <div class="wrong-q-head">
+            <span class="wrong-q-num">第${idx+1}题</span>
+            <span class="wrong-q-type">${typeLabel} · ${q.module}</span>
+          </div>
+          <div class="wrong-stem">${q.stem}</div>
+          <div class="wrong-answer-row">
+            <span class="label">你的答案</span>
+            <span class="user-ans">${userText}</span>
+          </div>
+          <div class="wrong-answer-row">
+            <span class="label">正确答案</span>
+            <span class="correct-ans">${correctText}</span>
+          </div>
+          <div class="wrong-expl">
+            <strong>📖 解析：</strong>${q.explanation}
+          </div>
+        </div>
+      `;
+    });
+    document.getElementById('wrongList').innerHTML = html;
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function restartExam() {
+  document.getElementById('resultPage').style.display = 'none';
+  document.getElementById('resultPage').classList.remove('show');
+  document.getElementById('startPage').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+// 点击面板外关闭导航
+document.addEventListener('click', function(e) {
+  const panel = document.getElementById('navPanel');
+  const navBtn = document.querySelector('.btn-nav');
+  if (panel.classList.contains('show') &&
+      !panel.contains(e.target) &&
+      !navBtn.contains(e.target)) {
+    panel.classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
