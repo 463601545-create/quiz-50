@@ -488,7 +488,8 @@ body {
       <p>• <strong>答完即判</strong>：选完立刻显示对错和解析</p>
       <p>• <strong>答案锁定</strong>：答过不能改，不能回看上一题</p>
       <p>• <strong>随机出题</strong>：题序和选项每次都打乱</p>
-      <p>• <strong>限时45分钟</strong>：45题及格（90分）</p>
+      <p>• <strong>计分方式</strong>：每题2分，满分100分，90分及格</p>
+      <p>• <strong>限时45分钟</strong>：时间到自动交卷</p>
     </div>
   </div>
 
@@ -548,7 +549,7 @@ body {
 <div id="resultPage" class="result-page">
   <div class="score-hero">
     <div class="score-big" id="finalScore">0</div>
-    <div class="score-label">总分 50 分</div>
+    <div class="score-label">总分 100 分</div>
     <div class="score-desc" id="scoreDesc"></div>
     <div class="score-stats">
       <div class="stat-item correct">
@@ -885,7 +886,7 @@ function submitExam() {
   let correct = 0;
   questions.forEach((q, i) => { if (userAnswers[i] === q.answer) correct++; });
   const wrong = questions.length - correct;
-  const score = correct;
+  const score = correct * 2;
 
   document.getElementById('examPage').style.display = 'none';
   document.getElementById('bottomBar').style.display = 'none';
@@ -899,8 +900,8 @@ function submitExam() {
   document.getElementById('timeUsed').textContent = `${usedMin}:${usedSec}`;
 
   let desc = '';
-  if (score >= 48) desc = '🏆 优秀！' + (score >= 50 ? '满分通过，' : '') + '内容掌握非常扎实，可以带新人了。';
-  else if (score >= 45) desc = '✅ 及格通过（90分以上），基础掌握到位，细节再补一补。';
+  if (score >= 96) desc = '🏆 优秀！' + (score >= 100 ? '满分通过，' : '') + '内容掌握非常扎实，可以带新人了。';
+  else if (score >= 90) desc = '✅ 及格通过（90分以上），基础掌握到位，细节再补一补。';
   else desc = '❌ 不及格（低于90分），建议重新学习课程内容后再考一次。';
   document.getElementById('scoreDesc').textContent = desc;
 
@@ -921,7 +922,7 @@ function submitExam() {
     statsHtml += `
       <div class="module-row">
         <span class="module-name">${m}</span>
-        <span class="module-score">${s.correct}/${s.total}</span>
+        <span class="module-score">${s.correct * 2}/${s.total * 2}</span>
         <div class="module-bar-wrap"><div class="module-bar-fill" style="width:${pct}%;background:${color}"></div></div>
       </div>
     `;
